@@ -5,7 +5,7 @@ db=mysql.connector.connect(
     password=''
 )
 cursor=db.cursor()
-req="CREATE DATABASE IF NOT EXIST Price_Tracker"
+req="CREATE DATABASE IF NOT EXISTS Price_Tracker"
 cursor.execute(req)
 if cursor.rowcount>0:
     print("DataBase created successfully")
