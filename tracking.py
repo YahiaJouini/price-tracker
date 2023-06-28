@@ -19,8 +19,12 @@ while True:
     if percentage.isnumeric() and 0<=int(percentage)<=100:
         percentage=int(percentage)
         break
+    else:
+        print('invalid input!')
+
 print('='*80)
 print('')
+
 #cleaning the price format
 def clean(price):
     price=price.replace(",",'.')
@@ -37,10 +41,14 @@ def inserting():
     page_number=0
     while True:#to check multiple pages
         page_number += 1
-        url=f"https://www.jumia.com.tn/pc-portables/?page={page_number}"
-        code=requests.get(url).content
-        results=BeautifulSoup(code,'lxml')
-        results = results.find_all("article", {'class': 'prd _fb col c-prd'})
+        try:
+            url=f"https://www.jumia.com.tn/pc-portables/?page={page_number}"
+            code=requests.get(url).content
+            results=BeautifulSoup(code,'lxml')
+            results = results.find_all("article", {'class': 'prd _fb col c-prd'})
+        except:
+            print("An error occured! check your internet connection")
+            break
         if results!=[]:
             for result in results:
                 reduction=result.find("div",{'class','bdg _dsct _sm'})
@@ -54,9 +62,10 @@ def inserting():
                         cursor.execute("insert into products(id,name,price,reduction_percentage,link) values(%s,%s,%s,%s,%s)",(count,prod_name,float(clean(prod_price)),float(reduction),prod_link))
                         db.commit()
         else:
+            print(f"We have found {count} products that matches your needs!")
             break
-    print(f"We have found {count} products that matches your needs")
 if __name__=='__main__':
     inserting()
+
 
 
